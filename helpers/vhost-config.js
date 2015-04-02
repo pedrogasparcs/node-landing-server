@@ -43,7 +43,7 @@ function staticApp (app_in, publicPath_in) {
         }
         else {
             //console.log ("static");
-            next ();
+            next (); // LET THE STATIC MIDDLEWARE RESOLVE
         }
     });
     host.use(serveStatic(publicPath_in));

@@ -15,6 +15,8 @@ INSTANTIATE SERVER
  */
 var app = express();
 app.basepath = __dirname;
+app.set('views', './views');
+app.set('view engine', 'jade');
 
 /*
 SERVER NEEDED MODELS
@@ -98,9 +100,6 @@ app.use('/config-hosts-versions', function (req, res, next) {
     }, 3000);
 });
 
-
-
-
 app.get('/load-version-form', function (req, res, next) {
     res.sendFile(__dirname + '/public/load-version-form.html');
 });
@@ -110,8 +109,9 @@ app.post('/load-version', function (req, res, next) {
     console.log (req.files);
     console.log (req.body);
     */
-    res.send ("CÁ VEIO OUTRA VEZ");
+    res.send ("CÁ VEIO");
 });
+app.get('/')
 app.use('/', function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     var lastPart = req.originalUrl.substr (req.originalUrl.lastIndexOf("/"));
