@@ -98,7 +98,7 @@ Prepare and run insertions pipe
 addToPipe(new WebApp (remaxConfig));
 addToPipe(new WebApp (potatoConfig));
 addToPipe(new WebApp (tomatoConfig));
-addToPipe(new ServerUser ({name: 'Pedro Gaspar', email: 'pedro.guspa@gmail.com'}));
+addToPipe(new ServerUser ({name: 'Pedro Gaspar', email: 'pedro.guspa@gmail.com', googleprofile: {}}));
 
 processPipe (function () {
    process.exit (0);

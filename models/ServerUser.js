@@ -8,7 +8,8 @@ var models = require('./');
 var schema = new Schema ({
     name: String,
     email: String,
-    active: {type: Boolean, default: true}
+    active: {type: Boolean, default: true},
+    googleprofile: Object
 });
 
 module.exports = {model: mongoose.model('ServerUser', schema), schema: schema};

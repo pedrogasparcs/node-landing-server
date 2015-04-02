@@ -1,6 +1,6 @@
 var vhost = require('./helpers/vhost-config');
 var aslptemplator = require('./helpers/as-lp-templator');
-var vab = require('./helpers/vab');
+var vab = require('./helpers/vab-deploy');
 var authenticator = require('./routes/authenticator')
 var constants = require('./config/constants');
 //
@@ -47,15 +47,16 @@ app.use(multer({ dest: constants.uploadspath})); // middleware that handle all m
 app.use('/auth', authenticator);
 
 app.get('/load-version-form', function (req, res, next) {
+    console.log (req.session);
     res.sendFile(constants.systempublicpath + 'load-version-form.html');
 });
 app.post('/load-version', function (req, res, next) {
-    vab.deploy(req.body.webapp, __dirname, req.files.zip, constants.vhostspublicpath);
+    vab.deploy(req.body.webapp, req.files.zip, constants.vhostspublicpath);
     /*
     console.log (req.files);
     console.log (req.body);
     */
-    res.send ("CÁ VEIO");
+    res.redirect ('/load-version-form?deployed=1');
 });
 app.use('/', function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
@@ -72,13 +73,29 @@ app.use('/', function (req, res, next) {
 });
 
 /*
-CONFIGURE VHOSTS
+VHosts Setup
  */
 function reloadHosts (req, res, next) {
+    var WebApp = app.models('WebApp').model;
+    var webapps = WebApp.find ({}, function (err, docs) {
+        if (docs.length > 0) {
+            var i=0;
+            for(i=0; i < docs.length; i++) {
+                if (docs[i].webapp.indexOf("www.") === 0) {
+                    vhost.config(app, '*.' + docs[i].webapp.substr(4), constants.vhostspublicpath + docs[i].webapp);
+                }
+                else {
+                    vhost.config(app, docs[i].webapp, constants.vhostspublicpath + docs[i].webapp);
+                }
+            }
+        }
+    });
+    /*
     // - load configuration file and iterate
     vhost.config(app, '*.remax-vivant.com', constants.vhostspublicpath + 'www.remax-vivant.com');
     vhost.config(app, '*.tomato.com', constants.vhostspublicpath + 'www.tomato.com');
     vhost.config(app, '*.potato.com', constants.vhostspublicpath + 'www.potato.com');
+    */
     if(res) {
         res.send ("DONE RELOAD HOSTS");
     }

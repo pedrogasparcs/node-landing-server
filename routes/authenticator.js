@@ -3,6 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
+var models = require('../models');
 var passport = require('passport')
     , GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
 
@@ -28,7 +29,10 @@ passport.use(new GoogleStrategy({
         console.log (accessToken);
         console.log (refreshToken);
         console.log (profile);
-        done (null, profile);
+        var ServerUser = models('ServerUser').model;
+        ServerUser.findOne({email:profile.emails[0].value, active:true}, function (err, user) {
+            done (err, user);
+        })
 /*
         User.findOrCreate({ googleId: profile.id }, function (err, user) {
             return done(err, user);
@@ -49,6 +53,7 @@ router.get('/google/return',
     });
 
 router.get('/logged', function (req, res, next) {
+    console.log (req.session);
     res.send ('hoorray you\'re Logged');
 });
 router.get('/login', function (req, res, next) {

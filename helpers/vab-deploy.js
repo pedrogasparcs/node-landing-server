@@ -13,11 +13,16 @@ var constants = require('../config/constants')
 @file_in - expected to be an object in multer format, at least: {path: full_path, name: name plus extension}
 @outputBase_in - base directory, usually the public
  */
-function deploy (webapp_in, baseDir_in, file_in, outputBase_in) {
-    var zipFile = baseDir_in + '/' + file_in.path;
+function deploy (webapp_in, file_in, outputBase_in) {
+    var zipFile = file_in.path;
     var versionFolder = file_in.name.substr (0, file_in.name.indexOf('.zip'));
-    var destinationDir = baseDir_in + outputBase_in + webapp_in + '/' + constants.vabsdirectory + versionFolder;
-    var extraction = unzip.Extract({ path: destinationDir })
+    var destinationDir = outputBase_in + webapp_in + '/' + constants.vabsdirectory + versionFolder;
+    var extraction = unzip.Extract({ path: destinationDir });
+    /*
+    console.log ("zipFile " + zipFile);
+    console.log ("versionFolder " + versionFolder);
+    console.log ("destinationDir " + destinationDir);
+    */
     extraction.on ('close', function (param) {
         var WebApp = models('WebApp').model;
         WebApp.find ({webapp:webapp_in}, function (err, doc) {
