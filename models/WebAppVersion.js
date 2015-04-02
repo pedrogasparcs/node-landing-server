@@ -11,7 +11,8 @@ var schema = new Schema ({
     path: String,
     meta: [ConfigMetaData.schema],
     iso: String,
-    keywords: String
+    keywords: String,
+    active: {type: Boolean, default: true}
 });
 
 module.exports = {model: mongoose.model('ConfigVersion', schema), schema: schema};
