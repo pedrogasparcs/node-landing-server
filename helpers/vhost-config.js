@@ -5,6 +5,7 @@ var express = require('express');
 var compression = require('compression');
 var vhost = require('vhost');
 var serveStatic = require('serve-static');
+var constants = require('../config/constants')
 
 function staticApp (app_in, publicPath_in) {
     var host = express();
@@ -12,7 +13,7 @@ function staticApp (app_in, publicPath_in) {
     host.use('/', function (req, res, next) {
         // validate it's the indexes
         var lastPart = req.path.substr (req.path.lastIndexOf("/"));
-        if (lastPart === "/" || lastPart === "/index.html" || lastPart === "/index.htm") {
+        if (lastPart === "/" || lastPart === "/" + constants.defaultdocument) {
             // get document base url
             var hostPlusUrl = req.get('host').substr (0, req.get('host').indexOf(":")) + req.originalUrl;
             var appbase = hostPlusUrl.substr (0, String(hostPlusUrl).lastIndexOf ("/"));
@@ -21,11 +22,11 @@ function staticApp (app_in, publicPath_in) {
                 console.log (docs);
                 var pathTo, fileTo;
                 if (docs === null || docs.length === 0 || docs[0].versions.length === 0) {
-                    fileTo = app_in.basepath + '/public/' + appbase + '/index.html';
+                    fileTo = constants.vhostspublicpath + appbase + '/' + constants.defaultdocument;
                 }
                 else if (docs[0].versions.length === 1) {
                     pathTo = docs[0].versions[0].path;
-                    fileTo = app_in.basepath + '/public/' + appbase + '/' + pathTo + 'index.html';
+                    fileTo = constants.vhostspublicpath + appbase + '/' + pathTo + constants.defaultdocument;
                 }
                 else
                 {
@@ -35,7 +36,7 @@ function staticApp (app_in, publicPath_in) {
                     else {
                         pathTo = docs[0].versions[Math.round(Math.random()*(docs[0].versions.length-1))].path;
                     }
-                    fileTo = app_in.basepath + '/public/' + appbase + '/' + pathTo + 'index.html';
+                    fileTo = constants.vhostspublicpath + appbase + '/' + pathTo + constants.defaultdocument;
                 }
                 //console.log (fileTo);
                 res.sendFile (fileTo);

@@ -3,21 +3,22 @@
  */
 var fs = require('fs');
 var models = require('../models');
+var constants = require('../config/constants');
 
 function prepareTemplate (configuration) {
-    var staticsbasedir = __dirname + '/../public/';
+    var staticsbasedir = constants.vhostspublicpath;
     var Config = models('Config').model;
     var configs = Config.find ({webapp:configuration.webapp}, function (err, docs) {
         if (docs !== null && docs.length !== 0) {
             if (docs[0].versions.length === 0) {
-                fileTo = staticsbasedir + docs[0].webapp + '/' + 'index.html';
+                fileTo = staticsbasedir + docs[0].webapp + '/' + constants.defaultdocument;
                 replaceTemplateKeywords (fileTo, configuration);
             }
             else {
                 var i;
                 for(i=0; i < docs[0].versions.length; i++) {
                     pathTo = docs[0].versions[i].path;
-                    fileTo = staticsbasedir + docs[0].webapp + '/' + pathTo + 'index.html';
+                    fileTo = staticsbasedir + docs[0].webapp + '/' + pathTo + constants.defaultdocument;
                     var rep = docs[0].versions[i].meta.length > 0?docs[0].versions[i].meta[0]:docs[0].meta[0];
                     replaceTemplateKeywords (fileTo, docs[0], rep);
                 }

@@ -5,6 +5,7 @@ var unzip = require('unzip');
 var fs = require('fs');
 var models = require('../models/');
 var aslptemplator = require('../helpers/as-lp-templator');
+var constants = require('../config/constants')
 
 /*
 @webapp_in - system-wide identification and public directory
@@ -15,13 +16,13 @@ var aslptemplator = require('../helpers/as-lp-templator');
 function deploy (webapp_in, baseDir_in, file_in, outputBase_in) {
     var zipFile = baseDir_in + '/' + file_in.path;
     var versionFolder = file_in.name.substr (0, file_in.name.indexOf('.zip'));
-    var destinationDir = baseDir_in + outputBase_in + webapp_in + '/vabs/' + versionFolder;
+    var destinationDir = baseDir_in + outputBase_in + webapp_in + '/' + constants.vabsdirectory + versionFolder;
     var extraction = unzip.Extract({ path: destinationDir })
     extraction.on ('close', function (param) {
         var Config = models('Config').model;
         Config.find ({webapp:webapp_in}, function (err, doc) {
             doc[0].versions.push ({
-                path: 'vabs/' + versionFolder + '/',
+                path: constants.vabsdirectory + versionFolder + '/',
                 meta: doc[0].meta
             });
             Config.findOneAndUpdate ({webapp:webapp_in}, {versions: doc[0].versions}, function (err, docf) {

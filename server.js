@@ -1,6 +1,7 @@
 var vhost = require('./helpers/vhost-config');
 var aslptemplator = require('./helpers/as-lp-templator');
 var vab = require('./helpers/vab');
+var constants = require('.config/constants');
 //
 var compression = require('compression');
 var express = require('express');
@@ -30,7 +31,7 @@ DEFINE SERVER GENERAL MIDDLEWARE
 
 // compress all requests
 app.use(compression());
-app.use(multer({ dest: './uploads/'})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
+app.use(multer({ dest: constants.uploadspath})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
 
 app.use('/config-hosts-versions', function (req, res, next) {
     var Config = app.models('Config').model;
@@ -101,10 +102,10 @@ app.use('/config-hosts-versions', function (req, res, next) {
 });
 
 app.get('/load-version-form', function (req, res, next) {
-    res.sendFile(__dirname + '/public/load-version-form.html');
+    res.sendFile(constants.systempublicpath + 'load-version-form.html');
 });
 app.post('/load-version', function (req, res, next) {
-    vab.deploy(req.body.webapp, __dirname, req.files.zip, '/public/');
+    vab.deploy(req.body.webapp, __dirname, req.files.zip, constants.vhostspublicpath);
     /*
     console.log (req.files);
     console.log (req.body);
@@ -115,7 +116,7 @@ app.get('/')
 app.use('/', function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     var lastPart = req.originalUrl.substr (req.originalUrl.lastIndexOf("/"));
-    if (lastPart === "/" || lastPart === "/index.html" || lastPart === "/index.htm") {
+    if (lastPart === "/" || lastPart === "/" + constants.defaultdocument) {
         var req1 = new Request({ name: fullUrl});
         req1.save(function (err) {
             if (err) {
@@ -131,9 +132,9 @@ CONFIGURE VHOSTS
  */
 function reloadHosts (req, res, next) {
     // - load configuration file and iterate
-    vhost.config(app, '*.remax-vivant.com', './public/www.remax-vivant.com');
-    vhost.config(app, '*.tomato.com', './public/www.tomato.com');
-    vhost.config(app, '*.potato.com', './public/www.potato.com');
+    vhost.config(app, '*.remax-vivant.com', constants.vhostspublicpath + 'www.remax-vivant.com');
+    vhost.config(app, '*.tomato.com', constants.vhostspublicpath + 'www.tomato.com');
+    vhost.config(app, '*.potato.com', constants.vhostspublicpath + 'www.potato.com');
     if(res) {
         res.send ("DONE RELOAD HOSTS");
     }

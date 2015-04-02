@@ -1,3 +1,4 @@
 module.exports = {
-    vhostspublicpath: 'vhosts_public/'
+    mongoserver: 'mongodb://localhost/',
+    mongodb: 'as-lp-server'
 };
