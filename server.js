@@ -110,7 +110,7 @@ app.post('/load-version', function (req, res, next) {
     console.log (req.files);
     console.log (req.body);
     */
-    res.send ("CÁ VEIO");
+    res.send ("CÁ VEIO OUTRA VEZ");
 });
 app.use('/', function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
