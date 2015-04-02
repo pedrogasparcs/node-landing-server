@@ -1,3 +1,5 @@
 node_modules/
 vhosts_public/
 uploads/
+.idea
+npm-debug.log
