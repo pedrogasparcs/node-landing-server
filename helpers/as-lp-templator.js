@@ -7,8 +7,8 @@ var constants = require('../config/constants');
 
 function prepareTemplate (configuration) {
     var staticsbasedir = constants.vhostspublicpath;
-    var Config = models('Config').model;
-    var configs = Config.find ({webapp:configuration.webapp}, function (err, docs) {
+    var WebApp = models('WebApp').model;
+    var webapps = WebApp.find ({webapp:configuration.webapp}, function (err, docs) {
         if (docs !== null && docs.length !== 0) {
             if (docs[0].versions.length === 0) {
                 fileTo = staticsbasedir + docs[0].webapp + '/' + constants.defaultdocument;

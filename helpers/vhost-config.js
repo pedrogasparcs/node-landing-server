@@ -17,9 +17,9 @@ function staticApp (app_in, publicPath_in) {
             // get document base url
             var hostPlusUrl = req.get('host').substr (0, req.get('host').indexOf(":")) + req.originalUrl;
             var appbase = hostPlusUrl.substr (0, String(hostPlusUrl).lastIndexOf ("/"));
-            var Config = app_in.models('Config').model;
-            var configs = Config.find ({webapp: appbase}, function (err, docs) {
-                console.log (docs);
+            var WebApp = app_in.models('WebApp').model;
+            var webapps = WebApp.find ({webapp: appbase}, function (err, docs) {
+                //console.log (docs);
                 var pathTo, fileTo;
                 if (docs === null || docs.length === 0 || docs[0].versions.length === 0) {
                     fileTo = constants.vhostspublicpath + appbase + '/' + constants.defaultdocument;
@@ -38,7 +38,7 @@ function staticApp (app_in, publicPath_in) {
                     }
                     fileTo = constants.vhostspublicpath + appbase + '/' + pathTo + constants.defaultdocument;
                 }
-                //console.log (fileTo);
+                console.log (fileTo);
                 res.sendFile (fileTo);
             });
         }

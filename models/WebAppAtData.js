@@ -6,10 +6,8 @@ var mongoose = require('mongoose'),
 var models = require('./');
 
 var schema = new Schema ({
-    title: String,
-    description: String,
-    iso: String,
-    keywords: String
+    cpnid: {type: String, required: true},
+    campaignid: {type: String, required: true}
 });
 
-module.exports = {model: mongoose.model('WebAppMetaData', schema), schema: schema};
+module.exports = {model: mongoose.model('WebAppAtData', schema), schema: schema};

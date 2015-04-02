@@ -12,4 +12,4 @@ var schema = new Schema ({
     keywords: String
 });
 
-module.exports = {model: mongoose.model('ConfigMetaData', schema), schema: schema};
+module.exports = {model: mongoose.model('WebAppMetaData', schema), schema: schema};

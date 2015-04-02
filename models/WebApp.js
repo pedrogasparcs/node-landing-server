@@ -5,14 +5,17 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var models = require('./');
 
-var ConfigMetaData = models("ConfigMetaData");
-var ConfigVersion = models("ConfigVersion");
+var WebAppAtData = models("WebAppAtData");
+var WebAppMetaData = models("WebAppMetaData");
+var WebAppVersion = models("WebAppVersion");
 
 var schema = new Schema ({
     webapp: String,
     client: String,
-    meta: [ConfigMetaData.schema],
-    versions: [ConfigVersion.schema]
+    atdata: [WebAppAtData.schema],
+    meta: [WebAppMetaData.schema],
+    versions: [WebAppVersion.schema],
+    active: {type: Boolean, default: true}
 });
 
-module.exports = {model: mongoose.model('Config', schema), schema: schema};
+module.exports = {model: mongoose.model('WebApp', schema), schema: schema};

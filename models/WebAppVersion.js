@@ -5,14 +5,14 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 var models = require('./');
 
-var ConfigMetaData = models("ConfigMetaData");
+var WebAppMetaData = models("WebAppMetaData");
 
 var schema = new Schema ({
     path: String,
-    meta: [ConfigMetaData.schema],
+    meta: [WebAppMetaData.schema],
     iso: String,
     keywords: String,
     active: {type: Boolean, default: true}
 });
 
-module.exports = {model: mongoose.model('ConfigVersion', schema), schema: schema};
+module.exports = {model: mongoose.model('WebAppVersion', schema), schema: schema};

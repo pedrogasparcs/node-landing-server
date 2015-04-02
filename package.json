@@ -12,13 +12,17 @@
     "crypto": "0.0.3",
     "debug": "~2.1.1",
     "express": "~4.12.2",
+    "express-session": "^1.10.4",
     "express-vhost": "^0.2.0",
     "jade": "^1.9.2",
     "mongoose": "^4.0.1",
     "morgan": "~1.5.1",
     "multer": "^0.1.8",
+    "passport": "^0.2.1",
+    "passport-google-oauth": "^0.2.0",
     "serve-favicon": "~2.2.0",
     "serve-static": "^1.9.2",
+    "uglify-js": "^2.4.19",
     "unzip": "^0.1.11",
     "vhost": "^3.0.0"
   }

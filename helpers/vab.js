@@ -19,13 +19,13 @@ function deploy (webapp_in, baseDir_in, file_in, outputBase_in) {
     var destinationDir = baseDir_in + outputBase_in + webapp_in + '/' + constants.vabsdirectory + versionFolder;
     var extraction = unzip.Extract({ path: destinationDir })
     extraction.on ('close', function (param) {
-        var Config = models('Config').model;
-        Config.find ({webapp:webapp_in}, function (err, doc) {
+        var WebApp = models('WebApp').model;
+        WebApp.find ({webapp:webapp_in}, function (err, doc) {
             doc[0].versions.push ({
                 path: constants.vabsdirectory + versionFolder + '/',
                 meta: doc[0].meta
             });
-            Config.findOneAndUpdate ({webapp:webapp_in}, {versions: doc[0].versions}, function (err, docf) {
+            WebApp.findOneAndUpdate ({webapp:webapp_in}, {versions: doc[0].versions}, function (err, docf) {
                 aslptemplator.prepare(docf);
             });
         });

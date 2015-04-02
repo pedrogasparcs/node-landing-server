@@ -1,161 +1,105 @@
-var vhost = require('./helpers/vhost-config');
+#!/usr/bin/env node
 var aslptemplator = require('./helpers/as-lp-templator');
-var vab = require('./helpers/vab');
-var authenticator = require('./routes/authenticator')
 var constants = require('./config/constants');
 //
-var compression = require('compression');
-var express = require('express');
-var session = require('express-session');
-var multer = require('multer');
-var passport = require('passport')
-var path = require('path');
-var logger = require('morgan');
-var cookieParser = require('cookie-parser');
-var bodyParser = require('body-parser');
+var models = require('./models');
 
 /*
-INSTANTIATE SERVER
+Clear Collections
  */
-var app = express();
-/*
-Basic middleware for sessions and authentications
- */
-app.use(cookieParser());
-app.use(bodyParser());
-app.use(session({ secret: 'actualtrade' }));
-app.use(passport.initialize());
-app.use(passport.session());
-/*
-Views configuration
- */
-app.set('views', './views');
-app.set('view engine', 'jade');
-/*
-SERVER NEEDED MODELS
- */
-app.models = require('./models');
-var Request = app.models('Request').model;
+var WebApp = models('WebApp').model;
+var q = WebApp.remove ({});
+q.exec ();
+console.log ("removed webapps");
 
-/*
-DEFINE SERVER GENERAL MIDDLEWARE
- */
+var Request = models('Request').model;
+var q = Request.remove ({});
+q.exec ();
+console.log ("removed requests");
 
-// compress all requests
-app.use(compression());
-app.use(multer({ dest: constants.uploadspath})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
-app.use('/auth', authenticator);
-app.use('/config-hosts-versions', function (req, res, next) {
-    var Config = app.models('Config').model;
-    var q = Config.remove ({});
-    q.exec ();
-    var remaxConfig = {
-        webapp: 'www.remax-vivant.com',
-        client: 'Remax',
-        atdata: {
+var ServerUser = models('ServerUser').model;
+var q = ServerUser.remove ({});
+q.exec ();
+console.log ("removed serverusers");
 
-        },
-        meta:[{
-            title: 'Remax',
-            description: 'Descrição Remax',
-            iso: 'pt',
-            keywords: 'Keywords Remax'
-        }],
-        versions:[
-        ]};
-    var potatoConfig = {
-        webapp: 'www.potato.com',
-        client: 'Potato',
-        meta:[{
-            title: 'Potato',
-            description: 'Descrição Potato',
-            iso: 'pt',
-            keywords: 'Keywords Potato'
-        }],
-        versions:[
-            {
-                path:'/'
+var remaxConfig = {
+    webapp: 'www.remax-vivant.com',
+    client: 'Remax',
+    atdata: [{
+        cpnid: '5e97d496158bfac8c5459fc1cf4474e0',
+        campaignid: '3791'
+    }],
+    meta:[{
+        title: 'Remax',
+        description: 'Descrição Remax',
+        iso: 'pt',
+        keywords: 'Keywords Remax'
+    }],
+    versions:[
+    ]};
+var potatoConfig = {
+    webapp: 'www.potato.com',
+    client: 'Potato',
+    atdata: [{
+        cpnid: '5e97d496158bfac8c5459fc1cf4474e0',
+        campaignid: '3791'
+    }],
+    meta:[{
+        title: 'Potato',
+        description: 'Descrição Potato',
+        iso: 'pt',
+        keywords: 'Keywords Potato'
+    }],
+    versions:[
+    ]};
+var tomatoConfig = {
+    webapp: 'www.tomato.com',
+    client: 'Tomato',
+    atdata: [{
+        cpnid: '5e97d496158bfac8c5459fc1cf4474e0',
+        campaignid: '3791'
+    }],
+    meta:[{
+        title: 'Tomato',
+        description: 'Descrição Tomato',
+        iso: 'pt',
+        keywords: 'Keywords Tomato'
+    }],
+    versions:[
+    ]};
+
+
+
+var dbInsertionsPipe = [];
+var dbInsertionStep = 0;
+function addToPipe (modelToSave_in) {
+    dbInsertionsPipe.push (modelToSave_in);
+}
+function processPipe (callback_in) {
+    dbInsertionStep = 0;
+    var process = function () {
+        console.log ("processing insertion: " + (dbInsertionStep + 1));
+        dbInsertionsPipe[dbInsertionStep].save (function () {
+            dbInsertionStep++;
+            if (dbInsertionStep == dbInsertionsPipe.length) {
+                callback_in ();
             }
-            ,{
-                path:'macacos/'
-            }
-        ]};
-    var tomatoConfig = {
-        webapp: 'www.tomato.com',
-        client: 'Tomato',
-        atdata: {
-
-        },
-        meta:[{
-            title: 'Tomato',
-            description: 'Descrição Tomato',
-            iso: 'pt',
-            keywords: 'Keywords Tomato'
-        }],
-        versions:[
-            {
-                path:'/'
-            }
-            ,{
-                path:'macacos/'
-            }
-        ]};
-    var t = new Config (remaxConfig).save ();
-    var t = new Config (potatoConfig).save ();
-    var t = new Config (tomatoConfig).save ();
-    //res.send ("DONE SAVING CONFIGURATION");
-    //
-    setTimeout(function ()
-    {
-        aslptemplator.prepare (potatoConfig);
-        aslptemplator.prepare (tomatoConfig);
-        res.send ("DONE PROCESSING TEMPLATES");
-    }, 3000);
-});
-
-app.get('/load-version-form', function (req, res, next) {
-    res.sendFile(constants.systempublicpath + 'load-version-form.html');
-});
-app.post('/load-version', function (req, res, next) {
-    vab.deploy(req.body.webapp, __dirname, req.files.zip, constants.vhostspublicpath);
-    /*
-    console.log (req.files);
-    console.log (req.body);
-    */
-    res.send ("CÁ VEIO");
-});
-app.use('/', function (req, res, next) {
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    var lastPart = req.originalUrl.substr (req.originalUrl.lastIndexOf("/"));
-    if (lastPart === "/" || lastPart === "/" + constants.defaultdocument) {
-        var req1 = new Request({ name: fullUrl});
-        req1.save(function (err) {
-            if (err) {
-                console.log('error logging request');
+            else {
+                process ();
             }
         });
     }
-    next();
-});
-
-/*
-CONFIGURE VHOSTS
- */
-function reloadHosts (req, res, next) {
-    // - load configuration file and iterate
-    vhost.config(app, '*.remax-vivant.com', constants.vhostspublicpath + 'www.remax-vivant.com');
-    vhost.config(app, '*.tomato.com', constants.vhostspublicpath + 'www.tomato.com');
-    vhost.config(app, '*.potato.com', constants.vhostspublicpath + 'www.potato.com');
-    if(res) {
-        res.send ("DONE RELOAD HOSTS");
-    }
+    process ();
 }
-reloadHosts ();
-app.use('/reload-hosts', reloadHosts);
 
 /*
-START SERVER
+Prepare and run insertions pipe
  */
-app.listen(3000);
+addToPipe(new WebApp (remaxConfig));
+addToPipe(new WebApp (potatoConfig));
+addToPipe(new WebApp (tomatoConfig));
+addToPipe(new ServerUser ({name: 'Pedro Gaspar', email: 'pedro.guspa@gmail.com'}));
 
-module.exports = app;
+processPipe (function () {
+   process.exit (0);
+});

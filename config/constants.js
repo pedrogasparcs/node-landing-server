@@ -1,7 +1,8 @@
+var path = require('path');
 module.exports = {
-    systempublicpath: __dirname + '/../public/',
-    vhostspublicpath: __dirname + '/../vhosts_public/',
+    systempublicpath: path.resolve(__dirname + '/../public/') + '/',
+    vhostspublicpath: path.resolve(__dirname + '/../vhosts_public/') + '/',
     defaultdocument: 'index.html',
-    uploadspath: __dirname + '/../uploads/',
+    uploadspath: path.resolve(__dirname + '/../uploads/') + '/',
     vabsdirectory: 'vabs/'
 };
