@@ -1,14 +1,15 @@
 /**
  * Created by pedro on 31/03/15.
  */
-var mongoose = require('mongoose');
-var models = require('.');
+var mongoose = require('mongoose'),
+    Schema = mongoose.Schema;
+var models = require('./');
 
 var schema = new Schema ({
-    webapp: String,
-    client: String,
-    meta: Object,
-    versions: Array
+    title: String,
+    description: String,
+    iso: String,
+    keywords: String
 });
 
-module.exports = {model: mongoose.model('Config', schema), schema: schema};
+module.exports = {model: mongoose.model('ConfigMetaData', schema), schema: schema};
