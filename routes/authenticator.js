@@ -23,9 +23,9 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new GoogleStrategy({
-        clientID: '417715196602-43jmuqo7n8uhefe6a084ijl3jgn1s0vh.apps.googleusercontent.com',
-        clientSecret: 'qYV7the8x_hYuARV2XY_wjak',
-        callbackURL: 'http://www.remax-vivant.com:3000/auth/google/return'
+        clientID: '417715196602-f49b9nu9ejt1hcm35h2no91rurbm0idk.apps.googleusercontent.com',
+        clientSecret: 'WgQgeVOZDoKRextdbShNkOfL',
+        callbackURL: 'http://lpsrv.ahmprd.com:3000/auth/google/return'
     },
     function(accessToken, refreshToken, profile, done) {
         var ServerUser = models('ServerUser').model;

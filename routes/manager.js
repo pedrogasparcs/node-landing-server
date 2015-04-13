@@ -18,7 +18,7 @@ router.use (function (req, res, next) {
     }
 });
 router.get('/', function (req, res, next) {
-    res.redirect ('/manager/vab/add/');
+    res.redirect ('/manager/webapp/list/');
 });
 router.get('/vab/add/', function (req, res, next) {
     var WebApp = models('WebApp').model;
