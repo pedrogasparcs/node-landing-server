@@ -1,4 +1,4 @@
-var vhost = require('./helpers/vhost-config');
+var vhost = require('./helpers/vhost-configurator');
 var aslptemplator = require('./helpers/as-lp-templator');
 var vab = require('./helpers/vab-deploy');
 var constants = require('./config/constants');
@@ -73,14 +73,16 @@ app.use(function (req, res, next) {
 app.use(function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     var lastPart = req.originalUrl.substr (req.originalUrl.lastIndexOf("/"));
-    if (lastPart === "/" || lastPart === "/" + constants.defaultdocument) {
+    //if (lastPart === "/" || lastPart === "/" + constants.defaultdocument) {
         var req1 = new Request({ name: fullUrl});
         req1.save(function (err) {
             if (err) {
                 console.log('error logging request');
             }
+            //console.log ('request logged');
         });
-    }
+    //}
+    //console.log ('request logging middleware');
     next();
 });
 
