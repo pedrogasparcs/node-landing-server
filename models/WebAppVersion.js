@@ -9,7 +9,10 @@ var WebAppMetaData = models("WebAppMetaData");
 
 var schema = new Schema ({
     path: String,
-    meta: [WebAppMetaData.schema],
+    meta: {
+        type: Array,
+        default: [new WebAppMetaData.model ()]
+    },
     iso: String,
     keywords: String,
     active: {type: Boolean, default: true}

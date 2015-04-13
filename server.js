@@ -1,7 +1,7 @@
-var vhost = require('./helpers/vhost-configurator');
-var aslptemplator = require('./helpers/as-lp-templator');
-var vab = require('./helpers/vab-deploy');
 var constants = require('./config/constants');
+var dbconfig = require('./config/database');
+//
+var vhost = require('./helpers/vhost-configurator');
 //
 var authenticator = require('./routes/authenticator')
 var manager = require('./routes/manager')
@@ -16,6 +16,8 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var lessMiddleware = require('less-middleware');
+var MongoStore = require('connect-mongo')(session);
+
 
 /*
 INSTANTIATE SERVER
@@ -26,7 +28,8 @@ Basic middleware for sessions and authentications
  */
 app.use(cookieParser());
 app.use(bodyParser());
-app.use(session({ secret: 'actualtrade' }));
+app.use(session({ secret: 'actualtrade',
+    store: new MongoStore({ url: dbconfig.mongoserver + dbconfig.mongodb }) }));
 app.use(passport.initialize());
 app.use(passport.session());
 /*

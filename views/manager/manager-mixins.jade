@@ -1,0 +1,88 @@
+//
+   Created by pedro on 13/04/15.
+mixin contentIntro(title, content)
+    .container
+        .page-header
+            h1= title + ' '
+            small= content
+    //-
+        .jumbotron
+            .container
+                h1= title
+                p= content
+mixin formBack(url_in)
+    button.btn.btn-default.margin-bottom
+        a(href=url_in)
+            span.glyphicon.glyphicon-arrow-left
+            | &nbsp;Back to List
+mixin listPagination (managerModule_in, pageNum_in, totalPages_in, pageSize_in, availablePageSizes_in, top_in)
+    -var dropdir='dropdown'
+    if !top_in
+        -dropdir = 'dropup'
+    .btn-group
+        .btn-group
+            div(class=dropdir)
+                button.btn.btn-default.dropdown-toggle#dropdownMenu1(data-toggle='dropdown', aria-expanded='true')
+                    | Page size&nbsp;
+                    span.caret
+                ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
+                    each size in availablePageSizes_in
+                        li(role='presentation')
+                            a(role='menuitem', tabindex='-1', href='/manager/' + managerModule_in + '/list/' + pageNum_in + '/' + size)
+                                if size == pageSize_in
+                                    span.glyphicon.glyphicon-ok
+                                | &nbsp;
+                                =size
+        if totalPages_in > 1
+            -var i=1
+            .btn-group
+                nav
+                    ul.pagination.eliminate-margin
+                        if pageNum_in <= 1
+                            li.disabled
+                                span
+                                    span(aria-hidden='true') &laquo;
+                        else
+                            li
+                                -var prev = Number(pageNum_in) - 1
+                                a(href='/manager/' + managerModule_in + '/list/' + prev + '/' + pageSize_in, aria-label='Previous')
+                                    span(aria-hidden='true') &laquo;
+                        while i <= totalPages_in
+                            if i == pageNum_in
+                                li.active
+                                    span #{i}
+                            else
+                                li
+                                    a(href='/manager/' + managerModule_in + '/list/' + i + '/' + pageSize_in) #{i}
+                            -i++
+                        if pageNum_in >= totalPages_in
+                            li.disabled
+                                span
+                                    span(aria-hidden='true') &raquo;
+                        else
+                            li
+                                -var next = Number(pageNum_in) + 1
+                                a(href='/manager/' + managerModule_in + '/list/' + next + '/' + pageSize_in, aria-label='Next')
+                                    span(aria-hidden='true') &raquo;
+mixin listAdd(url_in)
+    .pull-right
+        button.btn.btn-default.margin-bottom
+            a(href=url_in) Add&nbsp;
+                span.glyphicon.glyphicon-plus-signs
+mixin listActionButtons (managerModule_in, id_in)
+    .pull-right.btn-group(role='group', aria-label='')
+        button.btn.btn-default
+            a(href='/manager/' + managerModule_in + '/edit/' + id_in)
+                span.glyphicon.glyphicon-pencil
+        button.btn.btn-default
+            a(href='/manager/' + managerModule_in + '/remove/' + id_in)
+                span.glyphicon.glyphicon-remove
+mixin listScripts (managerModule_in)
+    script.
+        $(function () {
+            $('tr').on('click', function () {
+                if ($(this).attr('rel')) {
+                    document.location.assign('/manager/#{managerModule_in}/edit/' + $(this).attr('rel'));
+                }
+            });
+        });

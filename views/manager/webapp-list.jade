@@ -1,0 +1,36 @@
+//-
+   Created by pedro on 09/04/15.
+
+extends listlayout.jade
+
+mixin extraStuff (managerModule_in, id_in)
+    .pull-right.btn-group.extraActions(role='group', aria-label='')
+        button.btn.btn-default
+            a(href='/manager/' + managerModule_in + '/' + id_in + '/vabs/list/')
+                span.glyphicon.glyphicon-list
+
+block table
+    table.table.table-hover.table-condensed
+        thead
+            tr
+                th #
+                th Client
+                th WebApp
+                th Campaign ID
+                th
+                    span.pull-right Actions
+        tbody
+            - var n = 1, type
+            each val in webapps
+                - type = ''
+                if !val.active
+                    - type = 'warning'
+                tr(class=type, rel=val._id)
+                    td= n
+                    td= val.client
+                    td= val.webapp
+                    td= val.atdata[0].cpnid
+                    td
+                        +listActionButtons(managerModule, val._id)
+                        +extraStuff(managerModule, val._id)
+                - n++

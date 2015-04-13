@@ -1,5 +1,6 @@
 
 @base: #f938ab;
+@marginBellowButtons: 20px;
 
 .box-shadow(@style, @c) when (iscolor(@c)) {
   -webkit-box-shadow: @style @c;
@@ -20,4 +21,11 @@ textarea.no-resize {
 
 .login-jumbo {
   margin-top:100px;
+}
+
+.btn.margin-bottom {
+  margin-bottom: @marginBellowButtons
+}
+.btn-group.extraActions {
+  margin-right: 10px;
 }
