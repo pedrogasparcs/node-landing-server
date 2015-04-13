@@ -1,8 +1,10 @@
 var vhost = require('./helpers/vhost-config');
 var aslptemplator = require('./helpers/as-lp-templator');
 var vab = require('./helpers/vab-deploy');
-var authenticator = require('./routes/authenticator')
 var constants = require('./config/constants');
+//
+var authenticator = require('./routes/authenticator')
+var manager = require('./routes/manager')
 //
 var compression = require('compression');
 var express = require('express');
@@ -13,6 +15,7 @@ var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var lessMiddleware = require('less-middleware');
 
 /*
 INSTANTIATE SERVER
@@ -31,6 +34,20 @@ Views configuration
  */
 app.set('views', './views');
 app.set('view engine', 'jade');
+
+/*
+var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
+app.use('/img', express['static'](path.join(bootstrapPath, 'img')));
+app.use(lessMiddleware({
+    src    : path.join(__dirname, 'public/css', 'less'),
+    paths  : [path.join(bootstrapPath, 'less')],
+    dest   : path.join(__dirname, 'public', 'css'),
+    prefix : '/css',
+    debug: true
+}));
+*/
+app.use(lessMiddleware(__dirname + '/public'));
+app.use(express.static(__dirname + '/public'));
 /*
 SERVER NEEDED MODELS
  */
@@ -44,21 +61,16 @@ DEFINE SERVER GENERAL MIDDLEWARE
 // compress all requests
 app.use(compression());
 app.use(multer({ dest: constants.uploadspath})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
-app.use('/auth', authenticator);
 
-app.get('/load-version-form', function (req, res, next) {
-    console.log (req.session);
-    res.sendFile(constants.systempublicpath + 'load-version-form.html');
+app.use(function (req, res, next) {
+    if (req.path.indexOf('/auth') === -1) {
+        req.session.urlAfterLogin = req.url;
+    }
+    //console.log (req.session.urlAfterLogin);
+    next ();
 });
-app.post('/load-version', function (req, res, next) {
-    vab.deploy(req.body.webapp, req.files.zip, constants.vhostspublicpath);
-    /*
-    console.log (req.files);
-    console.log (req.body);
-    */
-    res.redirect ('/load-version-form?deployed=1');
-});
-app.use('/', function (req, res, next) {
+
+app.use(function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     var lastPart = req.originalUrl.substr (req.originalUrl.lastIndexOf("/"));
     if (lastPart === "/" || lastPart === "/" + constants.defaultdocument) {
@@ -71,6 +83,9 @@ app.use('/', function (req, res, next) {
     }
     next();
 });
+
+app.use('/auth', authenticator);
+app.use('/manager', manager);
 
 /*
 VHosts Setup

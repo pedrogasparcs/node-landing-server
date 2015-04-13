@@ -1,0 +1,25 @@
+//-
+   Created by pedro on 09/04/15.
+
+extends ../layout.jade
+
+block content
+    +contentIntro ('Adicionar Versão', 'Seleccione um ficheiro zip para adicionar uma nova versão à WebApp')
+    .container
+        .col-lg-6
+            form.form-horizontal(action='/manager/add-vab', enctype='multipart/form-data', method='post')
+                .form-group
+                    label.col-sm-2.control-label(for='webapp') WebApp
+                    //-var lista = ['www.remax-vivant.com', 'www.tomato.com']
+                    .col-sm-10
+                        select.form-control#webapp(name='webapp')
+                            if webapps
+                                for item in webapps
+                                    option(value=item) #{item}
+                .form-group
+                    label.col-sm-2.control-label(for='zip') Ficheiro
+                    .col-sm-10
+                        input#zip(type='file', name='zip', size='40')
+                .form-group
+                    .col-sm-offset-2.col-sm-10
+                        input.btn.btn-info(type='submit', value='Enviar')

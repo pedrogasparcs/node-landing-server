@@ -3,3 +3,4 @@ vhosts_public/
 uploads/
 .idea
 npm-debug.log
+*.css

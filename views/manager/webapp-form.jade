@@ -1,0 +1,64 @@
+//-
+   Created by pedro on 09/04/15.
+
+extends ../layout.jade
+
+block content
+    +contentIntro ('Adicionar WebApp', 'Insira os dados que caracterizam uma WebApp (uma webapp corresponde a um endereço web onde irão alternar várias versões)')
+    .container
+        form.form-horizontal(action='/manager/add-webapp', enctype='multipart/form-data', method='post')
+            .col-lg-6
+                .panel.panel-default.panel-info
+                    .panel-heading
+                        h3.panel-title Atributos Principais
+                    .panel-body
+                        .form-group
+                            label.col-sm-3.control-label(for='webapp') WebApp
+                            .col-sm-9
+                                input.form-control#webapp(name='webapp', placeholder='www.exemplo.com')
+                        .form-group
+                            label.col-sm-3.control-label(for='client') Client
+                            .col-sm-9
+                                input.form-control#client(name='client', placeholder='Exemplo')
+                .panel.panel-default.panel-info
+                    .panel-heading
+                        h3.panel-title Business Data
+                    .panel-body
+                        .form-group
+                            label.col-sm-3.control-label(for='bd-cpnid') CPNID
+                            .col-sm-9
+                                input.form-control#bd-cpnid(name='bd-cpnid')
+                        .form-group
+                            label.col-sm-3.control-label(for='bd-cmpid') Campaign ID
+                            .col-sm-9
+                                input.form-control#bd-cmpid(name='bd-cmpid')
+            .col-lg-6
+                .panel.panel-default.panel-info
+                    .panel-heading
+                        h3.panel-title Metadata
+                    .panel-body
+                        .form-group
+                            label.col-sm-3.control-label(for='md-title') Title
+                            .col-sm-9
+                                input.form-control#md-title(name='md-title', aria-describedby='md-title-help')
+                                span.help-block#md-description-help Coloque aqui o title que irá popular a metatag e aparecerá no título do browser em todas as versões da WebApp (salvo seja feito o override pela versão)
+                        .form-group
+                            label.col-sm-3.control-label(for='md-description') Description
+                            .col-sm-9
+                                textarea.form-control.no-resize#md-description(name='md-description', aria-describedby='md-description-help')
+                                span.help-block#md-description-help Coloque aqui a description que irá popular a metatag de todas as versões da WebApp (salvo seja feito o override pela versão)
+                        .form-group
+                            label.col-sm-3.control-label(for='md-keywords') Keywords
+                            .col-sm-9
+                                input.form-control#md-keywords(name='md-keywords', aria-describedby='md-keywords-help')
+                                span.help-block#md-keywords-help Coloque aqui as keywords que irão popular a metatag de todas as versões da WebApp (salvo seja feito o override pela versão)
+                        //-
+                            .form-group
+                                label.col-sm-3.control-label(for='md-iso') ISO
+                                .col-sm-9
+                                    input.form-control#md-iso(name='md-iso')
+            .col-lg-12
+                hr
+            .form-group
+                .col-sm-offset-5.col-sm-2
+                    input.col-sm-12.btn.btn-info(type='submit', value='Enviar')

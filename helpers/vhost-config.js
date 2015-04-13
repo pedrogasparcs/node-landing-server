@@ -38,7 +38,7 @@ function staticApp (app_in, publicPath_in) {
                     }
                     fileTo = constants.vhostspublicpath + appbase + '/' + pathTo + constants.defaultdocument;
                 }
-                console.log (fileTo);
+                //console.log (fileTo);
                 res.sendFile (fileTo);
             });
         }

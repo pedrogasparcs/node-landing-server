@@ -1,0 +1,27 @@
+//-
+   Created by pedro on 08/04/15.
+mixin contentIntro(title, content)
+    .container
+        .page-header
+            h1= title + ' '
+                small= content
+    //-
+        .jumbotron
+            .container
+                h1= title
+                p= content
+
+html
+    head
+        title My Site - #{title}
+        block scripts
+            script(src='https://code.jquery.com/jquery-1.11.2.min.js')
+            script(src='/js/bootstrap.min.js')
+        block styles
+            link(rel='stylesheet', type='text/css', href='/css/styles.css')
+    body
+        block topmenu
+            include ./global/head.jade
+        block content
+        block foot
+            include ./global/foot.jade
