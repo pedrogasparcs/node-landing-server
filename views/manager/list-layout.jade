@@ -1,7 +1,7 @@
 //-
    Created by pedro on 09/04/15.
 
-extends ../layout.jade
+extends manager-layout.jade
 
 include manager-mixins.jade
 
@@ -10,7 +10,7 @@ block content
     .container
         .col-lg-12
             +listPagination(managerModule, page, pages, pageSize, availablePageSizes, true)
-            +listAdd ('/manager/' + managerModule + '/add')
+            +listAdd ('/' + managerModule + '/add')
         .col-lg-12
             block table
             +listPagination(managerModule, page, pages, pageSize, availablePageSizes, false)

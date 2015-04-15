@@ -1,15 +1,16 @@
 //-
    Created by pedro on 09/04/15.
 
-extends ../layout.jade
+extends manager-layout.jade
+
 include manager-mixins.jade
 
 block content
     +contentIntro ('Adicionar WebApp', 'Insira os dados que caracterizam uma WebApp (uma webapp corresponde a um endereço web onde irão alternar várias versões)')
     .container
         .col-lg-12
-            +formBack ('/manager/webapp/list')
-        form.form-horizontal(action='/manager/webapp/' + action + '/', enctype='multipart/form-data', method='post')
+            +formBack ('/webapp/list')
+        form.form-horizontal(action='/webapp/' + action + '/', enctype='multipart/form-data', method='post')
             input(name='id', type='hidden', value=webapp._id)
             .col-lg-6
                 .panel.panel-default.panel-info
@@ -31,11 +32,11 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='bd-cpnid') CPNID
                             .col-sm-9
-                                input.form-control#bd-cpnid(name='bd-cpnid', value=webapp.atdata[0].cpnid)
+                                input.form-control#bd-cpnid(name='bd-cpnid', value=webapp.cpnid)
                         .form-group
                             label.col-sm-3.control-label(for='bd-cmpid') Campaign ID
                             .col-sm-9
-                                input.form-control#bd-cmpid(name='bd-cmpid', value=webapp.atdata[0].campaignid)
+                                input.form-control#bd-cmpid(name='bd-cmpid', value=webapp.campaignid)
             .col-lg-6
                 .panel.panel-default.panel-info
                     .panel-heading
@@ -44,18 +45,18 @@ block content
                         .form-group
                             label.col-sm-3.control-label(for='md-title') Title
                             .col-sm-9
-                                input.form-control#md-title(name='md-title', aria-describedby='md-title-help', value=webapp.meta[0].title)
+                                input.form-control#md-title(name='md-title', aria-describedby='md-title-help', value=webapp.meta.title)
                                 span.help-block#md-description-help Coloque aqui o title que irá popular a metatag e aparecerá no título do browser em todas as versões da WebApp (salvo seja feito o override pela versão)
                         .form-group
                             label.col-sm-3.control-label(for='md-description') Description
                             .col-sm-9
                                 textarea.form-control.no-resize#md-description(name='md-description', aria-describedby='md-description-help')
-                                    =webapp.meta[0].description
+                                    =webapp.meta.description
                                 span.help-block#md-description-help Coloque aqui a description que irá popular a metatag de todas as versões da WebApp (salvo seja feito o override pela versão)
                         .form-group
                             label.col-sm-3.control-label(for='md-keywords') Keywords
                             .col-sm-9
-                                input.form-control#md-keywords(name='md-keywords', aria-describedby='md-keywords-help', value=webapp.meta[0].keywords)
+                                input.form-control#md-keywords(name='md-keywords', aria-describedby='md-keywords-help', value=webapp.meta.keywords)
                                 span.help-block#md-keywords-help Coloque aqui as keywords que irão popular a metatag de todas as versões da WebApp (salvo seja feito o override pela versão)
                         //-
                             .form-group
@@ -66,6 +67,6 @@ block content
                 hr
             .form-group
                 .col-sm-5
-                    +formBack ('/manager/webapp/list')
+                    +formBack ('/webapp/list')
                 .col-sm-2
                     input.col-sm-12.btn.btn-info(type='submit', value='Enviar')

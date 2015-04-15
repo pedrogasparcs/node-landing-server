@@ -3,7 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var models = require('../models');
+var models = require('../models/index');
 var flash = require('connect-flash');
 var passport = require('passport')
     , GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
@@ -23,9 +23,9 @@ passport.deserializeUser(function(id, done) {
 });
 
 passport.use(new GoogleStrategy({
-        clientID: '417715196602-f49b9nu9ejt1hcm35h2no91rurbm0idk.apps.googleusercontent.com',
-        clientSecret: 'WgQgeVOZDoKRextdbShNkOfL',
-        callbackURL: 'http://lpsrv.ahmprd.com:3000/auth/google/return'
+        clientID: '417715196602-pdukiboke63scbc1nh2aq55o3ldu7ku4.apps.googleusercontent.com',
+        clientSecret: 'zHySHdnBmdpsQSbSznxw0IMz',
+        callbackURL: 'http://sso.ahmprd.com:3000/google/return'
     },
     function(accessToken, refreshToken, profile, done) {
         var ServerUser = models('ServerUser').model;
@@ -46,15 +46,15 @@ router.get('/google',
     passport.authenticate('google', { scope: ['https://www.googleapis.com/auth/userinfo.profile', 'https://www.googleapis.com/auth/userinfo.email'] }));
 
 router.get('/google/return',
-    passport.authenticate('google', { failureRedirect: '/auth/login', failureFlash: true }),
+    passport.authenticate('google', { failureRedirect: '/login', failureFlash: true }),
     function(req, res) {
         // Successful authentication, redirect home.
-        res.redirect('/auth/logged');
+        res.redirect('/logged');
     });
 
 router.get('/logged', function (req, res, next) {
     if (!req.user) {
-        res.redirect('/auth/login');
+        res.redirect('/login');
     }
     if (req.session.urlAfterLogin) {
         res.redirect (req.session.urlAfterLogin);
@@ -63,7 +63,7 @@ router.get('/logged', function (req, res, next) {
 });
 router.get('/logout', function (req, res, next) {
     req.logout();
-    res.redirect('/auth/login');
+    res.redirect('/login');
 });
 router.get('/login', function (req, res, next) {
     res.render ('auth/login', {loggedout:true});

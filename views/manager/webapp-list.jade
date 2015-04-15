@@ -1,12 +1,12 @@
 //-
    Created by pedro on 09/04/15.
 
-extends listlayout.jade
+extends list-layout.jade
 
 mixin extraStuff (managerModule_in, id_in)
     .pull-right.btn-group.extraActions(role='group', aria-label='')
         button.btn.btn-default
-            a(href='/manager/' + managerModule_in + '/' + id_in + '/vabs/list/')
+            a(href='/' + managerModule_in + '/' + id_in + '/vabs/list/')
                 span.glyphicon.glyphicon-list
 
 block table
@@ -29,7 +29,7 @@ block table
                     td= n
                     td= val.client
                     td= val.webapp
-                    td= val.atdata[0].cpnid
+                    td= val.cpnid
                     td
                         +listActionButtons(managerModule, val._id)
                         +extraStuff(managerModule, val._id)

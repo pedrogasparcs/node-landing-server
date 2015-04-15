@@ -28,7 +28,7 @@ mixin listPagination (managerModule_in, pageNum_in, totalPages_in, pageSize_in, 
                 ul.dropdown-menu(role='menu', aria-labelledby='dropdownMenu1')
                     each size in availablePageSizes_in
                         li(role='presentation')
-                            a(role='menuitem', tabindex='-1', href='/manager/' + managerModule_in + '/list/' + pageNum_in + '/' + size)
+                            a(role='menuitem', tabindex='-1', href='/' + managerModule_in + '/list/' + pageNum_in + '/' + size)
                                 if size == pageSize_in
                                     span.glyphicon.glyphicon-ok
                                 | &nbsp;
@@ -37,7 +37,7 @@ mixin listPagination (managerModule_in, pageNum_in, totalPages_in, pageSize_in, 
             -var i=1
             .btn-group
                 nav
-                    ul.pagination.eliminate-margin
+                    ul.pagination
                         if pageNum_in <= 1
                             li.disabled
                                 span
@@ -45,7 +45,7 @@ mixin listPagination (managerModule_in, pageNum_in, totalPages_in, pageSize_in, 
                         else
                             li
                                 -var prev = Number(pageNum_in) - 1
-                                a(href='/manager/' + managerModule_in + '/list/' + prev + '/' + pageSize_in, aria-label='Previous')
+                                a(href='/' + managerModule_in + '/list/' + prev + '/' + pageSize_in, aria-label='Previous')
                                     span(aria-hidden='true') &laquo;
                         while i <= totalPages_in
                             if i == pageNum_in
@@ -53,7 +53,7 @@ mixin listPagination (managerModule_in, pageNum_in, totalPages_in, pageSize_in, 
                                     span #{i}
                             else
                                 li
-                                    a(href='/manager/' + managerModule_in + '/list/' + i + '/' + pageSize_in) #{i}
+                                    a(href='/' + managerModule_in + '/list/' + i + '/' + pageSize_in) #{i}
                             -i++
                         if pageNum_in >= totalPages_in
                             li.disabled
@@ -62,7 +62,7 @@ mixin listPagination (managerModule_in, pageNum_in, totalPages_in, pageSize_in, 
                         else
                             li
                                 -var next = Number(pageNum_in) + 1
-                                a(href='/manager/' + managerModule_in + '/list/' + next + '/' + pageSize_in, aria-label='Next')
+                                a(href='/' + managerModule_in + '/list/' + next + '/' + pageSize_in, aria-label='Next')
                                     span(aria-hidden='true') &raquo;
 mixin listAdd(url_in)
     .pull-right
@@ -72,17 +72,17 @@ mixin listAdd(url_in)
 mixin listActionButtons (managerModule_in, id_in)
     .pull-right.btn-group(role='group', aria-label='')
         button.btn.btn-default
-            a(href='/manager/' + managerModule_in + '/edit/' + id_in)
+            a(href='/' + managerModule_in + '/edit/' + id_in)
                 span.glyphicon.glyphicon-pencil
         button.btn.btn-default
-            a(href='/manager/' + managerModule_in + '/remove/' + id_in)
+            a(href='/' + managerModule_in + '/remove/' + id_in)
                 span.glyphicon.glyphicon-remove
 mixin listScripts (managerModule_in)
     script.
         $(function () {
             $('tr').on('click', function () {
                 if ($(this).attr('rel')) {
-                    document.location.assign('/manager/#{managerModule_in}/edit/' + $(this).attr('rel'));
+                    document.location.assign('/#{managerModule_in}/edit/' + $(this).attr('rel'));
                 }
             });
         });

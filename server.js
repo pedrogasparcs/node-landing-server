@@ -3,8 +3,8 @@ var dbconfig = require('./config/database');
 //
 var vhost = require('./helpers/vhost-configurator');
 //
-var authenticator = require('./routes/authenticator')
-var manager = require('./routes/manager')
+var authenticator = require('./applications/sso.ahmprd.com')
+var manager = require('./applications/lpsrv.ahmprd.com')
 //
 var compression = require('compression');
 var express = require('express');
@@ -89,22 +89,26 @@ app.use(function (req, res, next) {
     next();
 });
 
-app.use('/auth', authenticator);
-app.use('/manager', manager);
+//app.use('/auth', authenticator);
+//app.use('/manager', manager);
 
 /*
 VHosts Setup
  */
 function reloadHosts (req, res, next) {
+    // Main Applications
+    vhost.configApplication (app, 'sso.ahmprd.com', authenticator);
+    vhost.configApplication (app, 'lpsrv.ahmprd.com', manager);
+    // - Main Applications
     var WebApp = app.models('WebApp').model;
-    var webapps = WebApp.find ({}, function (err, docs) {
+    var webapps = WebApp.find ({deleted:false}, function (err, docs) {
         if (docs.length > 0) {
             var i=0;
             for(i=0; i < docs.length; i++) {
                 if (docs[i].webapp.indexOf("www.") === 0) {
                     vhost.config(app, '*.' + docs[i].webapp.substr(4), constants.vhostspublicpath + docs[i].webapp);
                 }
-                else {
+                else if (docs[i].webapp != "") {
                     vhost.config(app, docs[i].webapp, constants.vhostspublicpath + docs[i].webapp);
                 }
             }

@@ -61,6 +61,12 @@ function configVhost (app_in, domain_in, publicPath_in)
     return domainApp;
 }
 
+function configVhostApplication (masterApp_in, domain_in, app_in)
+{
+    masterApp_in.use(vhost(domain_in, app_in));
+}
+
 module.exports = {
-    config: configVhost
+    config: configVhost,
+    configApplication: configVhostApplication
 }

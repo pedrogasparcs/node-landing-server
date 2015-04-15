@@ -4,28 +4,33 @@
 var mongoose = require('mongoose'),
     Schema = mongoose.Schema,
     mongoosePaginate = require('mongoose-paginate'),
+    mongooseTimestamp = require('mongoose-timestamp'),
+    mongooseSoftDelete = require('mongoose-delete'),
     models = require('./');
 
-var WebAppAtData = models("WebAppAtData");
 var WebAppMetaData = models("WebAppMetaData");
 var WebAppVersion = models("WebAppVersion");
 
 var schema = new Schema ({
-    webapp: String,
-    client: String,
-    atdata: {
-        type: Array,
-        default: [new WebAppAtData.model ()]
-    },
+    webapp: {type: String, default: ''},
+    client: {type: String, default: ''},
+    campaignid: {type: String, default: ''},
+    cpnid: {type: Number, default: 0},
     meta: {
-        type: Array,
-        default: [new WebAppMetaData.model ()]
+        type: Schema.Types.ObjectId,
+        ref: 'WebAppMetaData',
+        default: new WebAppMetaData.model ()
     },
-    versions: [WebAppVersion.schema],
+    versions: [ {
+        type: Schema.Types.ObjectId,
+        ref: 'WebAppVersion'
+    }],
     active: {type: Boolean, default: true}
 });
 
 schema.plugin(mongoosePaginate);
+schema.plugin(mongooseTimestamp);
+schema.plugin(mongooseSoftDelete, { deletedAt : true, deletedBy : true });
 
 module.exports = {
     model: mongoose.model('WebApp', schema),
