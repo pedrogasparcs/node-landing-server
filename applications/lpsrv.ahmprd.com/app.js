@@ -1,12 +1,11 @@
 /**
  * Created by pedro on 02/04/15.
  */
-var constants = require('../config/constants');
-var dbconfig = require('../config/database');
+var constants = require('../../config/constants');
+var dbconfig = require('../../config/database');
 
 var express = require('express');
-//var router = express.Router();
-var models = require('../models/index');
+var models = require('../../models/index');
 var flash = require('connect-flash');
 
 var compression = require('compression');
@@ -20,12 +19,13 @@ var bodyParser = require('body-parser');
 var lessMiddleware = require('less-middleware');
 var MongoStore = require('connect-mongo')(session);
 
+var authenticator = require('../../routes/authenticator');
+
 
 var app = express();
 app.use(compression());
 app.use(multer({ dest: constants.uploadspath})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
 app.use(flash());
-
 
 /*
  Basic middleware for sessions and authentications
@@ -39,45 +39,47 @@ app.use(passport.session());
 /*
  Views configuration
  */
-app.set('views', './views');
+app.set('views', ['./views', './applications/lpsrv.ahmprd.com/views']);
 app.set('view engine', 'jade');
 
-app.use(lessMiddleware(__dirname + '/public'));
-app.use(express.static(__dirname + '/public'));
+app.use(lessMiddleware(path.join(__dirname, 'public')));
+app.use(express.static(path.join (__dirname, 'public')));
 
+// authentication required
 app.use (function (req, res, next) {
-    if (!req.user) {
-        res.redirect ('/auth/login');
-    }
-    else {
-        next ();
-    }
+  if (req.url.indexOf ('/auth') === -1 && req.url.indexOf ('/auto') === -1 && !req.user) {
+    req.session.urlAfterLogin = req.url;
+    res.redirect ('/auth/login');
+  }
+  else {
+    next ();
+  }
 });
-// SSO INTEGRATION
-app.use ('/auth/login', function (req, res, next){
 
-});
-app.use ('/auth/logout', function (req, res, next){
+// authentication router and Google SSO configuration
+app.use ('/auth', authenticator.setup ({
+  clientID: '417715196602-8dhep0gcfe9hk75agiu1fqt4seflb2bv.apps.googleusercontent.com',
+  clientSecret: 'wqPebIEPoqG5fgKUxV4X6mB8',
+  callbackURL: 'http://lpsrv.ahmprd.com:3000/auth/google/return'
+}, '/auth'));
 
-});
-// - SSO INTEGRATION
-
+// default route
 app.get(['/', '/webapp'], function (req, res, next) {
     res.redirect ('/webapp/list/');
 });
+
 app.get('/vab/add/', function (req, res, next) {
-    var WebApp = models('WebApp').model;
-    WebApp.find ({webapp:req.body.webapp}, function (err, docs) {
-        if (docs.length !== 0) {
-            console.log (docs);
-            res.render ('manager/vab-form', {
-                webapps: ['teste', 'teste1']
-            });
-        }
-        else {
-            res.redirect ('/webapp/add/?nowebapps=1');
-        }
-    });
+  var WebApp = models('WebApp').model;
+  WebApp.find ({webapp:req.body.webapp}, function (err, docs) {
+    if (docs.length !== 0) {
+      res.render ('manager/vab-form', {
+        webapps: ['teste', 'teste1']
+      });
+    }
+    else {
+      res.redirect ('/webapp/add/?nowebapps=1');
+    }
+  });
 });
 app.post('/vab/add/', function (req, res, next) {
     vab.deploy(req.body.webapp, req.files.zip, constants.vhostspublicpath);
@@ -95,7 +97,6 @@ app.get('/webapp/:id/vabs/list/:page?/:pageSize?', function (req, res, next) {
 
     WebApp.find ({_id:req.params.id}, function (err, docs) {
         if (docs.length !== 0) {
-            console.log (docs);
             res.render ('manager/vab-form', {
                 webapps: ['teste', 'teste1']
             });

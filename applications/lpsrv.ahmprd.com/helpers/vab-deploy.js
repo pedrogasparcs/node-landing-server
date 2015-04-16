@@ -4,7 +4,7 @@
 var unzip = require('unzip');
 var fs = require('fs');
 var models = require('../models/');
-var aslptemplator = require('../helpers/as-lp-templator');
+var aslptemplator = require('as-lp-templator');
 var constants = require('../config/constants')
 
 /*

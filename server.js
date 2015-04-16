@@ -3,8 +3,7 @@ var dbconfig = require('./config/database');
 //
 var vhost = require('./helpers/vhost-configurator');
 //
-var authenticator = require('./applications/sso.ahmprd.com')
-var manager = require('./applications/lpsrv.ahmprd.com')
+var manager = require('./applications/lpsrv.ahmprd.com/app.js')
 //
 var compression = require('compression');
 var express = require('express');
@@ -34,9 +33,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 /*
 Views configuration
- */
 app.set('views', './views');
 app.set('view engine', 'jade');
+ */
 
 /*
 var bootstrapPath = path.join(__dirname, 'node_modules', 'bootstrap');
@@ -48,9 +47,9 @@ app.use(lessMiddleware({
     prefix : '/css',
     debug: true
 }));
-*/
 app.use(lessMiddleware(__dirname + '/public'));
 app.use(express.static(__dirname + '/public'));
+ */
 /*
 SERVER NEEDED MODELS
  */
@@ -63,16 +62,9 @@ DEFINE SERVER GENERAL MIDDLEWARE
 
 // compress all requests
 app.use(compression());
-app.use(multer({ dest: constants.uploadspath})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
+//app.use(multer({ dest: constants.uploadspath})); // middleware that handle all multipart/form-data forms and provides info on the routes req object
 
-app.use(function (req, res, next) {
-    if (req.path.indexOf('/auth') === -1) {
-        req.session.urlAfterLogin = req.url;
-    }
-    //console.log (req.session.urlAfterLogin);
-    next ();
-});
-
+// TODO: SERVER LOGGER -- CONFIGURATE / EDIT / DEVELOP
 app.use(function (req, res, next) {
     var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
     var lastPart = req.originalUrl.substr (req.originalUrl.lastIndexOf("/"));
@@ -97,7 +89,6 @@ VHosts Setup
  */
 function reloadHosts (req, res, next) {
     // Main Applications
-    vhost.configApplication (app, 'sso.ahmprd.com', authenticator);
     vhost.configApplication (app, 'lpsrv.ahmprd.com', manager);
     // - Main Applications
     var WebApp = app.models('WebApp').model;
@@ -125,7 +116,18 @@ function reloadHosts (req, res, next) {
     }
 }
 reloadHosts ();
-app.use('/reload-hosts', reloadHosts);
+app.use('/auto/reload-hosts', reloadHosts);
+
+app.use('/auto/seed-user/:name/:email', function (req, res, next) {
+  if (req.vhost.host.indexOf(":3000") !== -1) {
+    var ServerUser = require('./models')('ServerUser').model;
+    var user = new ServerUser ();
+    user.name = req.params.name;
+    user.email = req.params.email;
+    user.save();
+    res.send ("added");
+  }
+});
 
 /*
 START SERVER
